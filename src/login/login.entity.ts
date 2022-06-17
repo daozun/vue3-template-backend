@@ -9,11 +9,5 @@ export class Login extends Model {
   password: string;
 
   @Column
-  create_time: Date;
-
-  @Column
-  update_time: Date;
-
-  @Column
   delete_flag: boolean;
 }

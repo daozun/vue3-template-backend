@@ -1,13 +1,15 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, ValidationPipe } from '@nestjs/common';
 import { LoginService } from './login.service';
 import { LoginDto } from './dto/index';
 
-@Controller('login')
+@Controller('/dev-api')
 export class LoginController {
   constructor(private readonly loginService: LoginService) {}
 
-  @Post('/')
-  async create(@Body() loginDto: LoginDto) {
+  @Post('login')
+  async findOne(
+    @Body(new ValidationPipe({ transform: true })) loginDto: LoginDto,
+  ) {
     return await this.loginService.getUser(loginDto);
   }
 }
