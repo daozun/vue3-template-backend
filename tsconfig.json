@@ -3,6 +3,10 @@
     "module": "commonjs",
     "declaration": true,
     "removeComments": true,
+    "noLib": false,
+    "lib": [
+      "es2017"
+    ],
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,

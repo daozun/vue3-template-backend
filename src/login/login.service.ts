@@ -4,6 +4,8 @@ import { LoginDto } from './dto/index';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const jwt = require('jsonwebtoken');
 import { SECRET } from './config';
+import { isMatch } from '../utils/encryption';
+
 @Injectable()
 export class LoginService {
   constructor(
@@ -11,12 +13,19 @@ export class LoginService {
     private readonly loginRepository: typeof Login,
   ) {}
 
-  async getUser({ username }: LoginDto): Promise<Login> {
+  async getUser({ username, password }: LoginDto): Promise<Login> {
     const user = await this.loginRepository.findOne({
       where: { username: username },
     });
 
-    return user;
+    const hash = user.password;
+    const isMatchPassword = await isMatch(password, hash);
+
+    if (isMatchPassword) {
+      return user;
+    }
+
+    return null;
   }
 
   public generateJWT(user) {
