@@ -28,7 +28,7 @@ export class LoginService {
     return null;
   }
 
-  public generateJWT(user) {
+  public generateJWT(user: Login) {
     const today = new Date();
     const exp = new Date(today);
     exp.setDate(today.getDate() + 60);

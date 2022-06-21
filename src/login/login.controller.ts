@@ -29,7 +29,7 @@ export class LoginController {
     }
 
     const token = await this.loginService.generateJWT(loginUser);
-    const user = { token, username: loginUser.username };
+    const user = { token, userInfo: { username: loginUser.username } };
 
     return { data: user, message: '登录成功' };
   }
