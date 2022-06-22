@@ -6,19 +6,21 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
+import { ApiBearerAuth, ApiTags, ApiResponse } from '@nestjs/swagger';
 import { LoginService } from './login.service';
 import { LoginDto } from './dto/index';
 import { ResponseInterceptor } from '../interceptor/response.interceptor';
 
+@ApiBearerAuth()
+@ApiTags('login')
 @Controller('/dev-api')
 @UseInterceptors(ResponseInterceptor)
 export class LoginController {
   constructor(private readonly loginService: LoginService) {}
 
   @Post('login')
-  async findOne(
-    @Body(new ValidationPipe({ transform: true })) loginDto: LoginDto,
-  ) {
+  @ApiResponse({ status: 200 })
+  async findOne(@Body() loginDto: LoginDto) {
     const loginUser = await this.loginService.getUser(loginDto);
 
     if (!loginUser) {
