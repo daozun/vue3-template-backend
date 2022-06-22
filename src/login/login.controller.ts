@@ -1,15 +1,10 @@
-import {
-  Controller,
-  Post,
-  Body,
-  ValidationPipe,
-  UseInterceptors,
-} from '@nestjs/common';
+import { Controller, Post, Body, UseInterceptors } from '@nestjs/common';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { ApiBearerAuth, ApiTags, ApiResponse } from '@nestjs/swagger';
 import { LoginService } from './login.service';
 import { LoginDto } from './dto/index';
 import { ResponseInterceptor } from '../interceptor/response.interceptor';
+import { ValidationPipe } from '../pipe/validation.pipe';
 
 @ApiBearerAuth()
 @ApiTags('login')
@@ -20,7 +15,7 @@ export class LoginController {
 
   @Post('login')
   @ApiResponse({ status: 200 })
-  async findOne(@Body() loginDto: LoginDto) {
+  async findOne(@Body(new ValidationPipe()) loginDto: LoginDto) {
     const loginUser = await this.loginService.getUser(loginDto);
 
     if (!loginUser) {
