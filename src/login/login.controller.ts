@@ -20,7 +20,7 @@ export class LoginController {
 
     if (!loginUser) {
       throw new HttpException(
-        { message: '用户名或密码错误', code: '401', data: null },
+        { message: '用户名或密码错误', statusCode: '401', data: null },
         401,
       );
     }

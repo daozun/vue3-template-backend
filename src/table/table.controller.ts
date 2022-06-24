@@ -1,4 +1,12 @@
-import { Controller, Post, Body, UseInterceptors } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Get,
+  Body,
+  Param,
+  Query,
+  UseInterceptors,
+} from '@nestjs/common';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { ApiBearerAuth, ApiTags, ApiResponse } from '@nestjs/swagger';
 import { TableService } from './table.service';
@@ -17,19 +25,34 @@ export class TableController {
   @ApiResponse({ status: 200 })
   async addTable(@Body(new ValidationPipe()) tableDto: TableDto) {
     const table = await this.tableService.createTable(tableDto);
+
+    if (!table) {
+      throw new HttpException(
+        { message: '创建失败', statusCode: '500', data: null },
+        500,
+      );
+    }
+
+    return { data: null, message: '创建成功' };
+  }
+
+  @Get('table')
+  @ApiResponse({ status: 200 })
+  async getTable(@Query() tableDto: TableDto) {
     console.log(
-      '%c [ table ]-20',
+      '%c [ tableDto ]-41',
       'font-size:13px; background:pink; color:#bf2c9f;',
-      table,
+      tableDto,
     );
+    const table = await this.tableService.getTableList(tableDto);
 
-    // if (!table) {
-    //   throw new HttpException(
-    //     { message: '用户名或密码错误', code: '401', data: null },
-    //     500,
-    //   );
-    // }
+    if (!table) {
+      throw new HttpException(
+        { message: '查询失败', statusCode: '500', data: null },
+        500,
+      );
+    }
 
-    // return { data: null, message: '创建成功' };
+    return { data: table, message: null };
   }
 }
