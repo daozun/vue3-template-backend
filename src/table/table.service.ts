@@ -1,13 +1,12 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { Sequelize } from 'sequelize-typescript';
-import { Tables } from './table.entity';
+import { nestTable } from './table.entity';
 import { TableDto } from './dto/index';
 
 @Injectable()
 export class TableService {
   constructor(
     @Inject('TABLE_REPOSITORY')
-    private readonly tableRepository: typeof Tables,
+    private readonly tableRepository: typeof nestTable,
   ) {}
 
   async createTable({ title, status, author }: TableDto) {
@@ -24,33 +23,21 @@ export class TableService {
   }
 
   async getTableList(query: TableDto) {
-    console.log(
-      '%c [ query ]-26',
-      'font-size:13px; background:pink; color:#bf2c9f;',
-      query,
+    const user = await this.tableRepository.sequelize.query(
+      `select * from nesttable where (title like "%${
+        query.title ? query.title : ''
+      }%") and (status like "%${
+        query.status ? query.status : ''
+      }%") and (author like "%${
+        query.author ? query.author : ''
+      }%") and (limit like "%${
+        query.pageSize ? query.pageSize : ''
+      }%") and (offset like "%${
+        query.pageNo ? query.pageNo : ''
+      }%") and (delete_flag like "%0%")`,
+      { type: 'SELECT' },
     );
-    if ('title' in query) {
-      const user = await this.tableRepository.findOne({
-        where: { title: query.title },
-      });
 
-      // const user = await this.tableRepository.findOne({
-      //   where: {
-      //     $and: [
-      //       {
-      //         title: query.title,
-      //       },
-      //       {
-      //         status: query.status,
-      //       },
-      //       {
-      //         author: query.author,
-      //       },
-      //     ],
-      //   },
-      // });
-
-      return user;
-    }
+    return user;
   }
 }

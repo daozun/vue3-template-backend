@@ -1,9 +1,9 @@
 import { Table, Column, Model } from 'sequelize-typescript';
 
 @Table({
-  tableName: 'table',
+  tableName: 'nestTable',
 })
-export class Tables extends Model {
+export class nestTable extends Model {
   @Column
   title: string;
 

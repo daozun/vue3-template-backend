@@ -39,11 +39,6 @@ export class TableController {
   @Get('table')
   @ApiResponse({ status: 200 })
   async getTable(@Query() tableDto: TableDto) {
-    console.log(
-      '%c [ tableDto ]-41',
-      'font-size:13px; background:pink; color:#bf2c9f;',
-      tableDto,
-    );
     const table = await this.tableService.getTableList(tableDto);
 
     if (!table) {

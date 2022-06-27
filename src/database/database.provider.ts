@@ -1,6 +1,6 @@
 import { Sequelize } from 'sequelize-typescript';
 import { Login } from '../login/login.entity';
-import { Tables } from '../table/table.entity';
+import { nestTable } from '../table/table.entity';
 
 export const databaseProvider = [
   {
@@ -18,7 +18,7 @@ export const databaseProvider = [
         password: '19950820a!',
         database: 'nest-db',
       });
-      sequelize.addModels([Login, Tables]);
+      sequelize.addModels([Login, nestTable]);
       await sequelize.sync();
       return sequelize;
     },
