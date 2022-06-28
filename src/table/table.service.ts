@@ -1,6 +1,13 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { nestTable } from './table.entity';
-import { TableDto } from './dto/index';
+import {
+  CreateTableDto,
+  GetTableDto,
+  DeleteTableDto,
+  UpdateTableDto,
+} from './dto';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const _ = require('lodash');
 
 @Injectable()
 export class TableService {
@@ -9,35 +16,55 @@ export class TableService {
     private readonly tableRepository: typeof nestTable,
   ) {}
 
-  async createTable({ title, status, author }: TableDto) {
-    const user = this.tableRepository.build({
+  async createTable({ title, status, author }: CreateTableDto) {
+    const table = this.tableRepository.build({
       title: title,
       status: status,
       author: author,
       delete_flag: 0,
     });
 
-    user.save();
+    table.save();
 
-    return user;
+    return table;
   }
 
-  async getTableList(query: TableDto) {
-    const user = await this.tableRepository.sequelize.query(
-      `select * from nesttable where (title like "%${
-        query.title ? query.title : ''
-      }%") and (status like "%${
-        query.status ? query.status : ''
-      }%") and (author like "%${
-        query.author ? query.author : ''
-      }%") and (limit like "%${
-        query.pageSize ? query.pageSize : ''
-      }%") and (offset like "%${
-        query.pageNo ? query.pageNo : ''
-      }%") and (delete_flag like "%0%")`,
-      { type: 'SELECT' },
+  async getTableList(query: GetTableDto) {
+    const newQuery = _.pickBy({ ...query, ...{ delete_flag: '0' } });
+    const where = _.omit(newQuery, ['pageSize', 'pageNo']);
+
+    const table = await this.tableRepository.findAndCountAll({
+      where: where,
+      limit: _.toNumber(newQuery.pageSize),
+      offset: _.toNumber(newQuery.pageSize) * (_.toNumber(newQuery.pageNo) - 1),
+    });
+
+    return table;
+  }
+
+  async deleteTable(deleteTableDto: DeleteTableDto) {
+    const table = await this.tableRepository.update(
+      { delete_flag: '1' },
+      {
+        where: {
+          id: deleteTableDto.id,
+        },
+      },
     );
 
-    return user;
+    return table;
+  }
+
+  async updateTable({ id, title, status, author }: UpdateTableDto) {
+    const table = this.tableRepository.update(
+      { title: title, status: status, author: author },
+      {
+        where: {
+          id: id,
+        },
+      },
+    );
+
+    return table;
   }
 }
