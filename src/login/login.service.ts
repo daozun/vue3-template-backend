@@ -28,6 +28,12 @@ export class LoginService {
     return null;
   }
 
+  async getUserById(id: string): Promise<Login> {
+    const user = await this.loginRepository.findByPk(id);
+
+    return user;
+  }
+
   public generateJWT(user: Login) {
     const today = new Date();
     const exp = new Date(today);
