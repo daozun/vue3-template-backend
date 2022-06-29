@@ -6,6 +6,7 @@ import {
   Delete,
   Body,
   Query,
+  Param,
   UseInterceptors,
 } from '@nestjs/common';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
@@ -16,6 +17,7 @@ import {
   GetTableDto,
   DeleteTableDto,
   UpdateTableDto,
+  GetTableByIdDto,
 } from './dto';
 import { ResponseInterceptor } from '../interceptor/response.interceptor';
 import { ValidationPipe } from '../pipe/validation.pipe';
@@ -57,10 +59,27 @@ export class TableController {
     return { data: null, message: '更新成功' };
   }
 
-  @Get('table')
+  @Get('tablelist')
   @ApiResponse({ status: 200 })
   async getTable(@Query() getTableDto: GetTableDto) {
     const table = await this.tableService.getTableList(getTableDto);
+
+    if (!table) {
+      throw new HttpException(
+        { message: '查询失败', statusCode: '500', data: null },
+        500,
+      );
+    }
+
+    return { data: table, message: null };
+  }
+
+  @Get('table')
+  @ApiResponse({ status: 200 })
+  async getTableById(
+    @Query(new ValidationPipe()) getTableByIdDto: GetTableByIdDto,
+  ) {
+    const table = await this.tableService.getTableListById(getTableByIdDto);
 
     if (!table) {
       throw new HttpException(

@@ -5,6 +5,7 @@ import {
   GetTableDto,
   DeleteTableDto,
   UpdateTableDto,
+  GetTableByIdDto,
 } from './dto';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const _ = require('lodash');
@@ -38,6 +39,12 @@ export class TableService {
       limit: _.toNumber(newQuery.pageSize),
       offset: _.toNumber(newQuery.pageSize) * (_.toNumber(newQuery.pageNo) - 1),
     });
+
+    return table;
+  }
+
+  async getTableListById(param: GetTableByIdDto) {
+    const table = await this.tableRepository.findByPk(param.id);
 
     return table;
   }

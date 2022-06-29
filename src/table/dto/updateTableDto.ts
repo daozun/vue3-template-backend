@@ -1,10 +1,10 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsString, IsNumber } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdateTableDto {
   @ApiProperty({ example: '', description: 'id' })
   @IsNotEmpty()
-  @IsString()
+  @IsNumber()
   readonly id: string;
 
   @ApiProperty({ example: '', description: '标题' })
