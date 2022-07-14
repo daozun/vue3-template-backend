@@ -3,11 +3,11 @@ import { NestMiddleware, HttpStatus, Injectable } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 import * as jwt from 'jsonwebtoken';
 import { SECRET } from './config';
-import { LoginService } from './login.service';
+import { UserService } from './user.service';
 
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {
-  constructor(private readonly loginService: LoginService) {}
+  constructor(private readonly userService: UserService) {}
   async use(req: Request, res: Response, next: NextFunction) {
     const authHeaders = req.headers.authorization;
 
@@ -15,7 +15,7 @@ export class AuthMiddleware implements NestMiddleware {
       try {
         const decoded: any = jwt.verify(authHeaders, SECRET);
 
-        const user = await this.loginService.getUserById(decoded.id);
+        const user = await this.userService.getUserById(decoded.id);
         if (!user) {
           throw new HttpException(
             {

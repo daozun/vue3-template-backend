@@ -1,19 +1,19 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { Login } from './login.entity';
-import { LoginDto } from './dto/index';
+import { User } from './user.entity';
+import { UserDto } from './dto/index';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const jwt = require('jsonwebtoken');
 import { SECRET } from './config';
 import { isMatch } from '../utils/encryption';
 
 @Injectable()
-export class LoginService {
+export class UserService {
   constructor(
-    @Inject('LOGIN_REPOSITORY')
-    private readonly loginRepository: typeof Login,
+    @Inject('USER_REPOSITORY')
+    private readonly loginRepository: typeof User,
   ) {}
 
-  async getUser({ username, password }: LoginDto): Promise<Login> {
+  async getUser({ username, password }: UserDto): Promise<User> {
     const user = await this.loginRepository.findOne({
       where: { username: username },
     });
@@ -28,13 +28,13 @@ export class LoginService {
     return null;
   }
 
-  async getUserById(id: string): Promise<Login> {
+  async getUserById(id: string): Promise<User> {
     const user = await this.loginRepository.findByPk(id);
 
     return user;
   }
 
-  public generateJWT(user: Login) {
+  public generateJWT(user: User) {
     const today = new Date();
     const exp = new Date(today);
     exp.setDate(today.getDate() + 60);

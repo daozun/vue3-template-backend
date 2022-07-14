@@ -8,11 +8,11 @@ import { TableService } from './table.service';
 import { TableController } from './table.controller';
 import { tableProviders } from './table.provider';
 import { DatabaseModule } from '../database/database.module';
-import { AuthMiddleware } from '../login/auth.middleware';
-import { LoginModule } from '../login/login.module';
+import { AuthMiddleware } from '../user/auth.middleware';
+import { UserModule } from '../user/user.module';
 
 @Module({
-  imports: [DatabaseModule, LoginModule],
+  imports: [DatabaseModule, UserModule],
   providers: [TableService, ...tableProviders],
   controllers: [TableController],
   exports: [TableService],
