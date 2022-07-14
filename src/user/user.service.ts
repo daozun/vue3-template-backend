@@ -10,13 +10,17 @@ import { isMatch } from '../utils/encryption';
 export class UserService {
   constructor(
     @Inject('USER_REPOSITORY')
-    private readonly loginRepository: typeof User,
+    private readonly userRepository: typeof User,
   ) {}
 
   async getUser({ username, password }: UserDto): Promise<User> {
-    const user = await this.loginRepository.findOne({
+    const user = await this.userRepository.findOne({
       where: { username: username },
     });
+
+    if (!user) {
+      return null;
+    }
 
     const hash = user.password;
     const isMatchPassword = await isMatch(password, hash);
@@ -29,7 +33,7 @@ export class UserService {
   }
 
   async getUserById(id: string): Promise<User> {
-    const user = await this.loginRepository.findByPk(id);
+    const user = await this.userRepository.findByPk(id);
 
     return user;
   }
